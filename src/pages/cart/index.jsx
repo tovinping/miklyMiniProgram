@@ -7,7 +7,7 @@ import { add, minus, asyncAdd } from '../../actions/counter'
 import './index.scss'
 
 
-@connect(({ counter }) => ({
+connect(({ counter }) => ({
   counter
 }), (dispatch) => ({
   add () {
@@ -20,10 +20,10 @@ import './index.scss'
     dispatch(asyncAdd())
   }
 }))
-class Index extends Component {
+class Order extends Component {
 
     config = {
-    navigationBarTitleText: '首页'
+    navigationBarTitleText: '订单'
   }
 
   componentWillReceiveProps (nextProps) {
@@ -32,21 +32,21 @@ class Index extends Component {
 
   componentWillUnmount () { }
 
-  componentDidShow () { }
+  componentDidShow () { 
+    console.log('show')
+  }
 
-  componentDidHide () { }
+  componentDidHide () {
+    console.log('hide')
+   }
 
   render () {
     return (
-      <View className='index'>
-        <Button className='add_btn' onClick={this.props.add}>+</Button>
-        <Button className='dec_btn' onClick={this.props.dec}>-</Button>
-        <Button className='dec_btn' onClick={this.props.asyncAdd}>async</Button>
-        <View><Text>{this.props.counter.num}</Text></View>
-        <View><Text>Hello, World</Text></View>
+      <View className='order'>
+        <Text>订单页面</Text>
       </View>
     )
   }
 }
 
-export default Index
+export default Order
