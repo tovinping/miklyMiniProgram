@@ -1,0 +1,8 @@
+import domain from './domain'
+export const GET_OPENID = 'https://tovinping.cn/api/common/getOpenId'
+export const GET_UNIONID = 'https://tovinping.cn/api/common/getUnionid'
+export const MATCH_UNIONID = domain + '/matchUnionId'
+export const GET_VERCODE = domain + '/getVerCode'
+export const BIND_UNIONID = domain + '/bindUnionId'
+export const GET_TICKET = domain + '/getTicketByUserId'
+export const DEL_TICKET = domain + '/delTicket'

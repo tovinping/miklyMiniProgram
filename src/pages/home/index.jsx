@@ -41,13 +41,6 @@ const Index = (props) => {
       // imageUrl: '../../images/share/home.jpeg' // 本地图片还不知道怎么取
     };
   })
-  function getUserInfo() {
-    wx.getSetting({
-      success (res) {
-        console.log(res)
-      }
-    })
-  }
 
   return (
     <View className='index'>
@@ -56,7 +49,6 @@ const Index = (props) => {
         <Text>计数器:{counter.num}</Text>
       </View>
       <Button onClick={() => dispatch({type: 'ADD'})}>添加</Button>
-      <Button onClick={getUserInfo}>授权登录</Button>
     </View>
   )
 }

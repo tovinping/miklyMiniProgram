@@ -1,3 +1,4 @@
+const path = require('path')
 const config = {
   projectName: 'milkyMiniProgram',
   date: '2019-9-16',
@@ -9,6 +10,13 @@ const config = {
   },
   sourceRoot: 'src',
   outputRoot: 'dist',
+  alias: {
+    '@/utils': path.resolve(__dirname, '..', 'src/utils'),
+    '@/images': path.resolve(__dirname, '..', 'src/images'),
+    '@/api': path.resolve(__dirname, '..', 'src/api'),
+    '@/components': path.resolve(__dirname, '..', 'src/components'),
+    '@/actions': path.resolve(__dirname, '..', 'src/actions')
+  },
   plugins: {
     babel: {
       sourceMap: true,
@@ -70,6 +78,7 @@ const config = {
   h5: {
     publicPath: '/',
     staticDirectory: 'static',
+    esnextModules: ['taro-ui'],
     module: {
       postcss: {
         autoprefixer: {

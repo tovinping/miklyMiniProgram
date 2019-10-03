@@ -1,32 +1,19 @@
 import {
-  LOGIN,
-  LOGOUT
-} from '../constants/user'
+  TICKET,
+} from '../constants/store'
 
-export const login = (payload) => {
+export const setTicket = (payload) => {
   return {
-    type: LOGIN,
+    type: TICKET,
     payload
   }
 }
 
-export const logout = () => {
-  return {
-    type: LOGOUT
+export const delTicket = (payload) => {
+  return (dispatch, getState) => {
+    const ticket = getState().user.ticket
+    const data = ticket.data.filter(item => item.id !== payload)
+    dispatch(setTicket({count: data.length, data}))
   }
 }
 
-export const checkLogin = () => {
-  return dispatch => {
-    wx.getUserInfo({
-      success (res) {
-        if (res.userInfo) {
-          dispatch(login(res.userInfo))
-        }
-      },
-      fail (err) {
-        console.log(err)
-      }
-    })
-  }
-}

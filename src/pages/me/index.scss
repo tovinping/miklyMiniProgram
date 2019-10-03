@@ -5,6 +5,7 @@
   box-sizing: border-box;
   .user-info{
     display: flex;
+    padding: 20px 0;
     .avatar {
       border-radius: 50%;
       width: 100px;
@@ -12,7 +13,7 @@
       margin-right: 20px;
       overflow: hidden;
     }
-    >View{
+    .detail{
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -29,22 +30,43 @@
       font-weight: 100;
       color: #7f7f7f;
     }
+    .bind{
+      display: flex;
+      flex: 1;
+      justify-content: flex-end;
+      align-items: flex-end;
+      color: #666;
+      Image{
+        height: 100px;
+        width: 100px;
+      }
+    }
+  }
+  .ad-item{
+    width: 100%;
+    height: 350px;
+    margin-top: 30px;
+    Image{
+      display: block;
+      width: 100%;
+      height: 100%;
+      border-radius: 16px;
+    }
   }
   .more-info{
-    margin-top: 20px;
-    font-size: 36px;
-    .item{
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: #333;
-      padding: 30px 0;
-      border-bottom: 1px solid #d5d5d5;
-    }
-    Image{
-      width: 30px;
-      height: 30px;
+    position: relative;
+    .item-extra__info{
+      color: #ff3333;
       margin-right: 20px;
+    }
+    .service-btn{
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100px;
+      z-index: 1;
+      opacity: 0;
     }
   }
 }

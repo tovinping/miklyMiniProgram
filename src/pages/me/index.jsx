@@ -1,96 +1,117 @@
-import {
-  useDidShow,
-  useDidHide,
-  useEffect
-} from "@tarojs/taro";
-import { View, Text, Image } from "@tarojs/components";
-import { connect } from "@tarojs/redux";
-import { checkLogin } from "../../actions/user";
+import Taro from "@tarojs/taro";
+import { View, Text, Image, Button } from "@tarojs/components";
+import {useSelector, useDispatch} from '@tarojs/redux'
+import { AtMessage, AtList, AtListItem, AtButton } from "taro-ui"
+import {getUnionid, matchUnionId} from '../../api'
+import {checkBind} from '@/utils'
 
 import "./index.scss";
 
-const Me = ({ userInfo, dispatch }) => {
-  useEffect(() => {
-    // 检查用户是否登录
-    dispatch(checkLogin());
-  }, []);
-
-  useDidShow(() => {
-    console.log("didShow");
-  });
-
-  useDidHide(() => {
-    console.log("didHide");
-  });
+const Me = () => {
+  const {userInfo, userId, ticket} = useSelector(state => state.user)
+  const dispatch = useDispatch()
   function myTicket () {
-    wx.showToast({
-      title: '功能正在开发中',
-      icon: 'none',
-      duration: 1000
-    })
+    const bind = checkBind({showMsg: true})
+    if (bind) {
+      Taro.navigateTo({url: '/pages/me/ticket'})
+    }
   }
   function myLike () {
-    wx.showToast({
-      title: '功能正在开发中',
-      icon: 'none',
-      duration: 1000
-    })
+    const bind = checkBind({showMsg: true})
+    if (bind) {
+      console.log('BBG')
+    }
   }
   function myAddress () {
-    wx.showToast({
-      title: '功能正在开发中',
-      icon: 'none',
-      duration: 1000
-    })
+    const bind = checkBind({showMsg: true})
+    if (bind) {
+      console.log('BBG')
+    }
+  }
+  async function getUserInfo(e) {
+    if (e.detail.userInfo) {
+      const data = e.detail
+      // 获取 unionid并判断是否有绑定自建平台帐号
+      try {
+        const {unionId, avatarUrl, nickName, city} = await getUnionid(data.encryptedData, data.iv)
+        unionId && Taro.setStorage({key: 'unionid', data: unionId})
+        dispatch({type: 'LOGIN', payload: {nickName, city, avatarUrl}})
+        const res = await matchUnionId(unionId)
+        dispatch({type: 'USERID', payload: res.data.id})
+      } catch (error) {
+        Taro.atMessage({
+          message: error.message,
+          type: 'error'
+        })
+      }
+    }else{
+      console.log('用户没同意授权登陆, funk!你拿它一点办法都没有....')
+    }
+  }
+  function giftClick() {
+    console.log('绑定得大礼包哦~')
+    Taro.navigateTo({url: '/pages/bind/index'})
   }
   return (
     <View className="user-page">
       {userInfo.nickName ? (
         <View className="user-info">
           <Image className="avatar" src={userInfo.avatarUrl} />
-          <View>
+          <View className="detail">
             <Text className="name">{userInfo.nickName}</Text>
             <Text className="city">{userInfo.city}</Text>
           </View>
+          <View className="bind">
+            {userId ? (
+              <Text>你已经绑定平台帐号</Text>
+              ) : (
+                <Image src={require('@/images/giftBag.png')} alt="绑定得礼包" onClick={giftClick} />
+            )}
+          </View>
         </View>
       ) : (
-        <Button open-type="getUserInfo">
+        <Button open-type="getUserInfo" ongetuserinfo={getUserInfo}>
           点击使用微信登录
         </Button>
       )}
-      <View className="more-info">
-        <View className="item" onClick={myTicket}>
-          <View>
-            <Image src={require('../../images/ticket.png')} />
-            <Text>我的卡券</Text>
-          </View>
-          <Image src={require('../../images/right.png')} />
-        </View>
-        <View className="item" onClick={myLike}>
-          <View>
-            <Image src={require('../../images/like.png')} />
-            <Text>我的收藏</Text>
-          </View>
-          <Image src={require('../../images/right.png')} />
-        </View>
-        <View className="item" onClick={myAddress}>
-          <View>
-            <Image src={require('../../images/location.png')} />
-            <Text className="fa fa-map">我的地址</Text>
-          </View>
-          <Image src={require('../../images/right.png')} />
-        </View>
+      <View className="ad-item">
+        <Image src="https://tovinping.oss-cn-shenzhen.aliyuncs.com/images/milkyClient-whj8y6t4qf191.jpg" ></Image>
       </View>
+      <View className="more-info">
+        <AtList>
+          <AtListItem
+            title='我的红包'
+            extraText={`${ticket.count}个`}
+            arrow='right'
+            thumb={require('@/images/money_bag.png')}
+            onClick={myTicket}
+          />
+          <AtListItem
+            title='我的收藏'
+            arrow='right'
+            thumb={require('@/images/like.png')}
+            onClick={myLike}
+          />
+          <AtListItem
+            title='我的地址'
+            arrow='right'
+            thumb={require('@/images/location.png')}
+            onClick={myAddress}
+          />
+          <AtListItem 
+            title='我的客服' 
+            arrow='right' 
+            thumb={require('@/images/service_icon.png')}
+          />
+        </AtList>
+        <AtButton openType="contact" className="service-btn"></AtButton>
+      </View>
+      <AtMessage />
     </View>
   );
 };
 Me.config = {
   navigationBarTitleText: "我的"
 };
-const mapStateToProps = ({ user }) => {
-  return {
-    userInfo: user.userInfo
-  };
-};
 
-export default connect(mapStateToProps)(Me);
+export default Me
