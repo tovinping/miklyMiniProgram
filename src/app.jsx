@@ -24,7 +24,10 @@ class App extends Component {
       'pages/home/index',
       'pages/order/index',
       'pages/bind/index',
-      'pages/me/ticket'
+      'pages/me/ticket',
+      'pages/me/like',
+      'pages/me/address',
+      'pages/me/moreTicket'
     ],
     window: {
       backgroundTextStyle: 'light',
@@ -117,13 +120,6 @@ class App extends Component {
     } catch (error) {
       console.log(error)
     }
-    // 查询收藏 
-    try {
-      
-    } catch (error) {
-      
-    }
-    // 查询地址
   }
   // 在 App 类中的 render() 函数没有实际作用
   // 请勿修改此函数

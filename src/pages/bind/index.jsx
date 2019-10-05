@@ -57,7 +57,7 @@ const Bind = () => {
         }, 1500);
       } catch (error) {
         Taro.atMessage({
-          message: error.message,
+          message: error.msg,
           type: 'error'
         })
       }

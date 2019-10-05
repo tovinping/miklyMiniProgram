@@ -1,4 +1,4 @@
-import { LOGIN, USERID, TICKET, LIKE, ADDRESS, DEL_TICKET } from "../constants/store";
+import { LOGIN, USERID, TICKET, LIKE, ADDRESS } from "../constants/store";
 
 const INITIAL_STATE = {
   userInfo: {},

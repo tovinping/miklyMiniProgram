@@ -19,13 +19,13 @@ const Me = () => {
   function myLike () {
     const bind = checkBind({showMsg: true})
     if (bind) {
-      console.log('BBG')
+      Taro.navigateTo({url: '/pages/me/like'})
     }
   }
   function myAddress () {
     const bind = checkBind({showMsg: true})
     if (bind) {
-      console.log('BBG')
+      Taro.navigateTo({url: '/pages/me/address'})
     }
   }
   async function getUserInfo(e) {
@@ -40,7 +40,7 @@ const Me = () => {
         dispatch({type: 'USERID', payload: res.data.id})
       } catch (error) {
         Taro.atMessage({
-          message: error.message,
+          message: error.msg,
           type: 'error'
         })
       }

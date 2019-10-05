@@ -1,0 +1,17 @@
+.empty-wrap{
+  width: 100%;
+  padding-top: 40px;
+  Image{
+    display: block;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+  }
+  Text{
+    display: block;
+    font-size: 28px;
+    text-align: center;
+    color: #666;
+    padding: 30px 0;
+  }
+}

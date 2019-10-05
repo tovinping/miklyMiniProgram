@@ -1,0 +1,31 @@
+.like-item{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 40px;
+  border-bottom: 1px solid #f2f2f2;
+  Image{
+    width: 160px;
+    height: 120px;
+  }
+  .more{
+    flex: 1;
+    margin-left: 30px;
+    Text{
+      display: block;
+    }
+    .name{
+      font-size: 32px;
+      color: #333;
+    }
+    .count{
+      font-size: 24px;
+      line-height: 38px;
+      color: #999;
+    }
+    .sales{
+      font-size: 24px;
+      color: #ff2222;
+    }
+  }
+}

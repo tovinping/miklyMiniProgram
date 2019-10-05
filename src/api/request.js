@@ -4,11 +4,11 @@ import {objToUrl} from '@/utils'
 function handleResponse(response) {
   if (response.statusCode === 200) {
     if (response.data.code === 0) {
-      return Promise.reject({message: response.data.msg})
+      return Promise.reject(response.data)
     }
     return Promise.resolve(response.data)
   } else {
-    return Promise.reject({message: '系统错误!', code: response.statusCode, data: response.data})
+    return Promise.reject({msg: '接口异常！请检查接口是否有变更', code: response.statusCode, data: response.data})
   }
 }
 
