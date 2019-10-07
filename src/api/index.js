@@ -30,8 +30,8 @@ export const bindUnionId = async (mail, password, verCode, verCodeId) => {
   return post(url.BIND_UNIONID, {mail, password, verCode, verCodeId, unionId})
 }
 
-export const getTicket = async (userId) => {
-  return post(url.GET_TICKET, {userId})
+export const getTicket = async () => {
+  return post(url.GET_TICKET)
 }
 
 export const delTicket = async (userId, ticketId) => {

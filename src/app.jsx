@@ -6,7 +6,7 @@ import Index from './pages/home/index'
 
 import store from './store'
 
-import {getOpenId, matchUnionId, getTicket} from './api'
+import {getOpenId, getUnionid, matchUnionId} from './api'
 
 import './app.scss'
 
@@ -75,34 +75,21 @@ class App extends Component {
   }
   
   async componentDidMount () {
-    // 检测是否之前已经授权登录
+    // 检测是否可以直接获取用户信息
+    const me = this
     try {
-      const {userInfo} = await Taro.getUserInfo() //.then(({userInfo}) => {
-      store.dispatch({type: 'LOGIN', payload: userInfo})
-      // 查询是否绑定平台自建帐号
-      const unionId = Taro.getStorageSync('unionid')
-      if (unionId) {
-        try {
-          const {data} = await matchUnionId(unionId)
-          store.dispatch({type: 'USERID', payload: data.id})
-          // 查询红包、收藏、收藏地址等信息
-          this.queryAllInfo(data.id)
-        } catch (error) {
-          console.log(error)
+      const {encryptedData, iv} = await Taro.getUserInfo({withCredentials: true}) //.then(({userInfo}) => {
+      // 检查sessionKey是否有效
+      Taro.checkSession({
+        fail() {
+          me.getOpenId(encryptedData, iv)
+        },
+        success() {
+          me.getUnionid(encryptedData, iv)
         }
-      }
+      })
     } catch (error) {
-      // 用户未登录情况下先执行一次wx.login拿到openid和session_key(服务端)以便后面登录后拿到unionid
-      const openid = Taro.getStorageSync('openid')
-      if (openid) return
-      const {code} = await Taro.login()
-      try {
-        const {openid, unionId} = await getOpenId(code) //openid, unionId
-        openid && Taro.setStorage({key: 'openid', data: openid})
-        unionId && Taro.setStorage({key: 'unionid', data: unionId})
-      } catch (error) {
-        console.log(error)
-      }
+      this.getOpenId()
     }
   }
 
@@ -111,15 +98,39 @@ class App extends Component {
   componentDidHide () {}
 
   componentDidCatchError () {}
-  
-  async queryAllInfo(userId) {
-    // 查询红包
+
+  async getOpenId (encryptedData, iv) {
     try {
-      const {data} = await getTicket(userId)
-      store.dispatch({type: 'TICKET', payload: {count: data.count, data: data.rows}})
+      const {code} = await Taro.login()
+      const {openid, unionId} = await getOpenId(code) //openid, unionId
+
+      openid && Taro.setStorage({key: 'openid', data: openid})
+      if (unionId) {
+        Taro.setStorage({key: 'unionid', data: unionId})
+      } else if (encryptedData, iv) {
+        this.getUnionid(encryptedData, iv)
+      }
     } catch (error) {
       console.log(error)
     }
+  }
+
+  async getUnionid (encryptedData, iv) {
+    const {unionId, avatarUrl, nickName, city} = await getUnionid(encryptedData, iv)
+    unionId && Taro.setStorage({key: 'unionid', data: unionId})
+    store.dispatch({type: 'LOGIN', payload: {nickName, city, avatarUrl}})
+    unionId && this.checkBind(unionId)
+  }
+  // 查询是否绑定自建平台帐号
+  async checkBind (unionId) {
+    try {
+      const {data} = await matchUnionId(unionId)
+      Taro.setStorageSync('token', data.token)
+      Taro.setStorageSync('refreshToken', data.refreshToken)
+      store.dispatch({type: 'USERID', payload: 'isBind'})
+    } catch (error) {
+      console.log(error)
+    }    
   }
   // 在 App 类中的 render() 函数没有实际作用
   // 请勿修改此函数

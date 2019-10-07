@@ -1,8 +1,8 @@
-import Taro from "@tarojs/taro";
+import Taro, {useEffect} from "@tarojs/taro";
 import { View, Text, Image, Button } from "@tarojs/components";
 import {useSelector, useDispatch} from '@tarojs/redux'
 import { AtMessage, AtList, AtListItem, AtButton } from "taro-ui"
-import {getUnionid, matchUnionId} from '../../api'
+import {getUnionid, matchUnionId, getTicket} from '../../api'
 import {checkBind} from '@/utils'
 
 import "./index.scss";
@@ -10,6 +10,19 @@ import "./index.scss";
 const Me = () => {
   const {userInfo, userId, ticket} = useSelector(state => state.user)
   const dispatch = useDispatch()
+  async function getMyTicket () {
+    try {
+      const {data} = await getTicket()
+      dispatch({type: 'TICKET', payload: {count: data.count, data: data.rows}})
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  useEffect(() => {
+    if (userId) {
+      getMyTicket()
+    }
+  }, [userId])
   function myTicket () {
     const bind = checkBind({showMsg: true})
     if (bind) {
@@ -29,11 +42,11 @@ const Me = () => {
     }
   }
   async function getUserInfo(e) {
-    if (e.detail.userInfo) {
-      const data = e.detail
+    const {userInfo, encryptedData, iv} = e.detail
+    if (userInfo) {
       // 获取 unionid并判断是否有绑定自建平台帐号
       try {
-        const {unionId, avatarUrl, nickName, city} = await getUnionid(data.encryptedData, data.iv)
+        const {unionId, avatarUrl, nickName, city} = await getUnionid(encryptedData, iv)
         unionId && Taro.setStorage({key: 'unionid', data: unionId})
         dispatch({type: 'LOGIN', payload: {nickName, city, avatarUrl}})
         const res = await matchUnionId(unionId)
