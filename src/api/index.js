@@ -65,3 +65,12 @@ export const getMoreTicket = async () => {
 export const delMoreTicket = async (data) => {
   return post(url.DEL_MORETICKET, data)
 }
+
+export const refreshToken = async (data) => {
+  const refreshToken = Taro.getStorageSync('refreshToken')
+  const unionId = Taro.getStorageSync('unionid')
+  if (!refreshToken || !unionId) {
+    console.log('这种人就直接让它重新登录就好了')
+  }
+  return post(url.REFRESHTOKEN, {refreshToken, unionId})
+}

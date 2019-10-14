@@ -85,6 +85,7 @@ class App extends Component {
           me.getOpenId(encryptedData, iv)
         },
         success() {
+          console.log('sessionKey没有过期')
           me.getUnionid(encryptedData, iv)
         }
       })
@@ -127,6 +128,7 @@ class App extends Component {
       const {data} = await matchUnionId(unionId)
       Taro.setStorageSync('token', data.token)
       Taro.setStorageSync('refreshToken', data.refreshToken)
+      Taro.setStorageSync('tokenExpire', Date.now())
       store.dispatch({type: 'USERID', payload: 'isBind'})
     } catch (error) {
       console.log(error)
